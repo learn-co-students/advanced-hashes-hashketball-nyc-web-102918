@@ -51,8 +51,8 @@ def game_hash
                             :rebounds => 2,
                             :assists => 2,
                             :steals => 4,
-                            :blocks => 8,
-                            :slam_dunks => 5
+                            :blocks => 11,
+                            :slam_dunks => 1
           }
         }
       
@@ -161,33 +161,40 @@ def team_names
   
 
 def player_numbers(name)
+          num = []
+
   game_hash.collect do |location, team_data|
     if name == team_data[:team_name]
-       team_data[:number]
+       team_data[:players].collect do |player_name, stats|
+         num << stats[:number]
         end
       end
     end
+           return num
+
+end
   
 
   def player_stats(player)
   game_hash.each do |location, team_data|
-    team_data[:players].each do |player_name, stats|
-    if player = player_name
-       return players[:number,:shoe,:points,:rebounds,:assists,:steals,:blocks,:slam_dunks]
+    team_data[:players].collect do |player_name, info|
+    if player == player_name
+       return info
       end 
     end
   end
 end
 
+
+
 def big_shoe_rebounds
-  game_hash.each do |location, team_data|
-  team_data[:players].each do |name, stats|
-    if stats[:shoe] == stats[:shoe].max_by {|x| x[:value_length]}
-      return stats[:rebounds]
+  both = game_hash[:home][:players].merge(game_hash[:away][:players])
+   player = both.max_by {|player_name, stats| stats.fetch(:shoe)}
+         player[1][:rebounds]
       end
-    end
-  end
-end
+    
+  
+    
 
 #map/collect goes through and returns new array  select-all/find-conditional statement , each no abstraction returns origianl and find- first element get help setting up environment
 
